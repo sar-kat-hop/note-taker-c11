@@ -1,0 +1,34 @@
+GIVEN a note-taking application
+WHEN I open the Note Taker
+THEN I am presented with a landing page with a link to a notes page
+WHEN I click on the link to the notes page
+THEN I am presented with a page with existing notes listed in the left-hand column, plus empty fields to enter a new note title and the note’s text in the right-hand column
+WHEN I enter a new note title and the note’s text
+THEN a Save icon appears in the navigation at the top of the page
+WHEN I click on the Save icon
+THEN the new note I have entered is saved and appears in the left-hand column with the other existing notes
+WHEN I click on an existing note in the list in the left-hand column
+THEN that note appears in the right-hand column
+WHEN I click on the Write icon in the navigation at the top of the page
+THEN I am presented with empty fields to enter a new note title and the note’s text in the right-hand column
+
+TODO: 
+1. create html routes: 
+    GET /notes should return notes.html
+    GET * should return index.html
+
+2. create api routes:
+    GET /api/notes should read db.json and return saved notes as JSON
+    POST /api/notes should receive new note to save on request body, add to db.json, and return new note to client
+        *Give each note a unique id when saved ("look into npm packages that could do this for you")*
+
+3. (Bonus) delete fxnality:
+    DELETE /api/notes/:id should receive query param containing id of note to delete
+    (need to read db.json, remove note by specified id, rewrite notes to db.json)
+
+
+2. populate notes page with existing notes in left column, empty text entry fields (title and note content) in right column
+3. code save button to appear when text entered in both fields (require title and content)
+4. save button to push content to db.json (write/append), read db.json, append to notes page (new note should appear at bottom by default?)
+5. make existing notes clickable; when clicked, note title and content moves to right for editing? (upon clicking "write" button?)
+6? write button on navbar makes note taking fields in right column appear? (unclear if write is always visible or only visible if user clicks existing note)
