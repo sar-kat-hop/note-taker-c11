@@ -106,6 +106,7 @@ const handleNoteSave = () => {
   const newNote = {
     title: noteTitle.value,
     text: noteText.value,
+    note_id: uuid(), //add randomly generated id using uuid.js helper util
   };
   saveNote(newNote).then(() => {
     getAndRenderNotes();
