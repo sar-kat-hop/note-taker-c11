@@ -18,17 +18,17 @@ app.use(express.urlencoded({
 app.use(express.json());
 app.use(express.static("public"));
 
-//TODO: see if code below is approp for intended fxn... this code is used with STATIC ASSETS, not dynamically generated assets...
+//TODO: see if code below is approp for routing pages...?
 
-    //serve landing page ("home")
+    //serve landing page ("home"; since this pg is static, approp to create indiv route? 
     app.get("/home", (req, res) => 
       res.sendFile(path.join(__dirname, "/public/index.html"))
       );
 
-    //serve notes page
-    app.get("/myNotes", (req, res) => 
-      res.sendFile(path.join(__dirname, "/public/notes.html"))
-    );
+    // //serve notes page
+    // app.get("/myNotes", (req, res) => 
+    //   res.sendFile(path.join(__dirname, "/public/notes.html"))
+    // );
 
     // app.get((req, res) => res.send(""));
 
