@@ -1,7 +1,7 @@
 const express = require("express"); //import express
 const path = require("path");
-const uuid = require(""); //utility for generating ids for notes
-const noteData = require(""); //require db.json file 
+const uuid = require("../utilities/uuid"); //utility for generating ids for notes
+const noteData = require("../db/db.json"); //require db.json file 
 const fs = require("fs");
 
 const PORT = 3001; //set port for deployment
@@ -17,14 +17,14 @@ app.use(express.static("public"));
 //TODO: see if code below is approp for routing pages...?
 
   //serve landing page ("home"; since this pg is static, approp to create indiv route? 
-    app.get("/home", (req, res) => 
-      res.sendFile(path.join(__dirname, "/public/index.html"))
-      );
+    // app.get("/home", (req, res) => 
+    //   res.sendFile(path.join(__dirname, "./public/index.html"))
+    //   );
 
   //alternative to above:
-    // app.get("/", (req, res) =>
-    //   res.sendFile(path.join(__dirname, "/public/index/html"))
-    //   );
+    app.get("/", (req, res) =>
+      res.sendFile(path.join(__dirname, "./public/index.html"))
+      );
 
   // app.get((req, res) => res.send(""));
 
