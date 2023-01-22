@@ -1,75 +1,8 @@
-const express = require("express"); //import express
-const path = require("path");
-const uuid = require("/Develop/helpers/uuid.js"); //utility for generating ids for notes
-const noteData = require("/Develop/db/db.json"); //require db.json file 
-
-const PORT = 3001; //set port for deployment
-
-const app = express(); //initialize app var by setting it to = express()
-
-app.use(express.json());
-//prep express to parse data
-app.use(express.urlencoded({extended: true }));
-
-app.use(express.static("public"));
-
-//TODO: see if code below is approp for routing pages...?
-
-  //serve landing page ("home"; since this pg is static, approp to create indiv route? 
-    app.get("/home", (req, res) => 
-      res.sendFile(path.join(__dirname, "/public/index.html"))
-      );
-
-  //alternative to above:
-    app.get("/", (req, res) =>
-      res.sendFile(path.join(__dirname, "/public/index/html"))
-      );
-
-  // //serve notes page
-    // app.get("/myNotes", (req, res) => 
-    //   res.sendFile(path.join(__dirname, "/public/notes.html"))
-    // );
-
-  // app.get((req, res) => res.send(""));
-
-//return notes in JSON
-app.get("/api", (req, res) => res.json(noteData));
-
-app.listen(PORT, () => 
-  console.log(`App listening at http://localhost:${PORT}`)
-  );
-
 let noteTitle;
 let noteText;
 let saveNoteBtn;
 let newNoteBtn;
 let noteList;
-
-//moved get & post code up
-const getNotes = () =>
-  fetch('/api/notes', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-
-const saveNote = (note) =>
-  fetch('/api/notes', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(note),
-  });
-
-const deleteNote = (id) =>
-  fetch(`/api/notes/${id}`, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
 
 //dynamically generated html
 if (window.location.pathname === '/notes') {
@@ -89,6 +22,40 @@ const show = (elem) => {
 const hide = (elem) => {
   elem.style.display = 'none';
 };
+
+const getNotes = () =>
+  fetch('/api/notes', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+const saveNote = (note) =>
+  fetch('/api/notes', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(note),
+  })
+    //may not need following code:
+    .then((res) => res.json())
+    .then((data) => {
+      console.log("POST request successful: ", data);
+      return data;
+    })
+    .catch((error) => {
+      console.error("POST request error: ", error);
+    });
+
+const deleteNote = (id) =>
+  fetch(`/api/notes/${id}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 
 // activeNote is used to keep track of the note in the textarea
 let activeNote = {};
@@ -116,22 +83,24 @@ const handleNoteSave = () => {
       text: noteText.value,
       note_id: uuid(), //add randomly generated id using uuid.js helper util
     };
-    saveNote(newNote).then(() => {
+
+    saveNote(newNote).then((data) => {
       getAndRenderNotes();
       renderActiveNote();
+      alert(`Note saved. ID: ${data.note_id}`); //add alert to indicate note saved (replace with modal at some point)
     });
 
-    //may need to delete the following code; unclear if needed...
+    //may need to delete the following code; unclear if needed but useful for testing?
     const response = {
       status: "Success: Note saved.",
       body: newNote,
     };
-
-    console.log(response); //add console logging for troubleshooting
-    res.status(201).json(response);
+        console.log(response); //add console logging for testing
+        res.status(201).json(response);
 
   } else {
     res.status(500).json("Error: note could not be saved.");
+    console.error();
   }
 };
 
@@ -174,6 +143,11 @@ const handleRenderSaveBtn = () => {
     show(saveNoteBtn);
   }
 };
+
+//add save button event listener?
+saveNoteBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+});
 
 // Render the list of note titles
 const renderNoteList = async (notes) => {
