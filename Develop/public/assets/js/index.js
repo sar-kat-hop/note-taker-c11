@@ -1,9 +1,43 @@
-//express required
+//import express for app to fxn properly
 const express = require("express");
-const app = express();
+
+const path = require("path");
+
+//require db.json file 
+const noteData = require("./Develop/db/db.json");
 
 //set port for deployment
 const PORT = 3001;
+
+//initialize app var by setting it to = express()
+const app = express();
+
+//prep express to parse data
+app.use(express.urlencoded({
+  extended: true }));
+app.use(express.json());
+app.use(express.static("public"));
+
+//TODO: see if code below is approp for intended fxn... this code is used with STATIC ASSETS, not dynamically generated assets...
+
+    //serve landing page ("home")
+    app.get("/home", (req, res) => 
+      res.sendFile(path.join(__dirname, "/public/index.html"))
+      );
+
+    //serve notes page
+    app.get("/myNotes", (req, res) => 
+      res.sendFile(path.join(__dirname, "/public/notes.html"))
+    );
+
+    // app.get((req, res) => res.send(""));
+
+//return notes in JSON
+app.get("/api", (req, res) => res.json(noteData));
+
+app.listen(PORT, () => 
+  console.log(`App listening at http://localhost:${PORT}`)
+  );
 
 let noteTitle;
 let noteText;
@@ -11,8 +45,7 @@ let saveNoteBtn;
 let newNoteBtn;
 let noteList;
 
-//moved get & post fxns up for easier access
-
+//moved get & post code up
 const getNotes = () =>
   fetch('/api/notes', {
     method: 'GET',
