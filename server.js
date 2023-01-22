@@ -2,6 +2,7 @@ const express = require("express"); //import express
 const path = require("path");
 const uuid = require(""); //utility for generating ids for notes
 const noteData = require(""); //require db.json file 
+const fs = require("fs");
 
 const PORT = 3001; //set port for deployment
 
@@ -21,20 +22,60 @@ app.use(express.static("public"));
       );
 
   //alternative to above:
-    app.get("/", (req, res) =>
-      res.sendFile(path.join(__dirname, "/public/index/html"))
-      );
-
-  // //serve notes page
-    // app.get("/myNotes", (req, res) => 
-    //   res.sendFile(path.join(__dirname, "/public/notes.html"))
-    // );
+    // app.get("/", (req, res) =>
+    //   res.sendFile(path.join(__dirname, "/public/index/html"))
+    //   );
 
   // app.get((req, res) => res.send(""));
 
 //return notes in JSON
-app.get("/api", (req, res) => res.json(noteData));
+// app.get("/api", (req, res) => res.json(noteData));
 
-app.listen(PORT, () => 
-  console.log(`App listening at http://localhost:${PORT}`)
-  );
+//GET request for notes
+app.get("/api/notes", (req, res) => {
+  //notify client
+  res.json(`${req.method} request to get notes received (GET success)`);
+  // res.json(noteData);
+});
+
+//POST request to add note
+app.post("api/notes", (req, res) => {
+  //console log confirming request rec'd
+  console.info(`${rew.method} request to add note received (POST success)`);
+
+  const { title, text, note_id } = req.body;
+    if (title && text && note_id) {
+      const newNote = {
+        title,
+        text,
+        note_id: uuid(),
+      };
+
+  //Is this needed?
+    //convert to string to save
+    const noteString = JSON.stringify(newNote);
+
+    //write string to db.json and catch error if applicable
+    fs.writeFile(`./db/db.json`, noteString, (err) => 
+      err
+        ? console.error(err)
+        : console.info(`New note with ID ${note_id} has been written to db.json.`)
+        );
+
+    const response = {
+      status: "success",
+      body: newNote,
+      };  
+  
+    console.log(response);
+    res.status(201).json(response);
+
+    } else {
+      res.status(500).json("Error: could not post note.");
+    }
+  });
+
+//add port listening console msg
+app.listen(PORT, () =>
+  console.log(`Note Taker listening at http://localhost:${PORT}`)
+);

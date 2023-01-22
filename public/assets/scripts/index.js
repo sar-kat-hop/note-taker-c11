@@ -77,7 +77,7 @@ const renderActiveNote = () => {
 };
 
 const handleNoteSave = () => {
-  if (title && text) { //execute only if title & text have content
+  // if (title && text) { //execute only if title & text have content
     const newNote = {
       title: noteTitle.value,
       text: noteText.value,
@@ -87,22 +87,22 @@ const handleNoteSave = () => {
     saveNote(newNote).then((data) => {
       getAndRenderNotes();
       renderActiveNote();
+
       alert(`Note saved. ID: ${data.note_id}`); //add alert to indicate note saved (replace with modal at some point)
     });
 
-    //may need to delete the following code; unclear if needed but useful for testing?
-    const response = {
-      status: "Success: Note saved.",
-      body: newNote,
-    };
-        console.log(response); //add console logging for testing
-        res.status(201).json(response);
+  //move following code to server.js
+    // const response = {
+    //   status: "Success: Note saved.",
+    //   body: newNote,
+    // };
+    //     console.log(response); //add console logging for testing
+    //     res.status(201).json(response);
 
-  } else {
-    res.status(500).json("Error: note could not be saved.");
-    console.error();
-  }
-};
+  // } else {
+  //   res.status(500).json("Error: note could not be saved.");
+  //   console.error();
+  };
 
 // Delete the clicked note
 const handleNoteDelete = (e) => {
