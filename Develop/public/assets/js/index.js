@@ -1,36 +1,36 @@
-//import express for app to fxn properly
-const express = require("express");
-
+const express = require("express"); //import express
 const path = require("path");
+const uuid = require("/Develop/helpers/uuid.js"); //utility for generating ids for notes
+const noteData = require("/Develop/db/db.json"); //require db.json file 
 
-//require db.json file 
-const noteData = require("./Develop/db/db.json");
+const PORT = 3001; //set port for deployment
 
-//set port for deployment
-const PORT = 3001;
+const app = express(); //initialize app var by setting it to = express()
 
-//initialize app var by setting it to = express()
-const app = express();
-
-//prep express to parse data
-app.use(express.urlencoded({
-  extended: true }));
 app.use(express.json());
+//prep express to parse data
+app.use(express.urlencoded({extended: true }));
+
 app.use(express.static("public"));
 
-//TODO: see if code below is approp for intended fxn... this code is used with STATIC ASSETS, not dynamically generated assets...
+//TODO: see if code below is approp for routing pages...?
 
-    //serve landing page ("home")
+  //serve landing page ("home"; since this pg is static, approp to create indiv route? 
     app.get("/home", (req, res) => 
       res.sendFile(path.join(__dirname, "/public/index.html"))
       );
 
-    //serve notes page
-    app.get("/myNotes", (req, res) => 
-      res.sendFile(path.join(__dirname, "/public/notes.html"))
-    );
+  //alternative to above:
+    app.get("/", (req, res) =>
+      res.sendFile(path.join(__dirname, "/public/index/html"))
+      );
 
-    // app.get((req, res) => res.send(""));
+  // //serve notes page
+    // app.get("/myNotes", (req, res) => 
+    //   res.sendFile(path.join(__dirname, "/public/notes.html"))
+    // );
+
+  // app.get((req, res) => res.send(""));
 
 //return notes in JSON
 app.get("/api", (req, res) => res.json(noteData));
@@ -110,14 +110,29 @@ const renderActiveNote = () => {
 };
 
 const handleNoteSave = () => {
-  const newNote = {
-    title: noteTitle.value,
-    text: noteText.value,
-  };
-  saveNote(newNote).then(() => {
-    getAndRenderNotes();
-    renderActiveNote();
-  });
+  if (title && text) { //execute only if title & text have content
+    const newNote = {
+      title: noteTitle.value,
+      text: noteText.value,
+      note_id: uuid(), //add randomly generated id using uuid.js helper util
+    };
+    saveNote(newNote).then(() => {
+      getAndRenderNotes();
+      renderActiveNote();
+    });
+
+    //may need to delete the following code; unclear if needed...
+    const response = {
+      status: "Success: Note saved.",
+      body: newNote,
+    };
+
+    console.log(response); //add console logging for troubleshooting
+    res.status(201).json(response);
+
+  } else {
+    res.status(500).json("Error: note could not be saved.");
+  }
 };
 
 // Delete the clicked note
@@ -126,7 +141,8 @@ const handleNoteDelete = (e) => {
   e.stopPropagation();
 
   const note = e.target;
-  const noteId = JSON.parse(note.parentElement.getAttribute('data-note')).id;
+  //curious if this const should be changed to = randomly generated id?
+    const noteId = JSON.parse(note.parentElement.getAttribute('data-note')).id;
 
   if (activeNote.id === noteId) {
     activeNote = {};
