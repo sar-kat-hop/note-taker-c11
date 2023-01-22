@@ -1,16 +1,9 @@
-//import express for app to fxn properly
-const express = require("express");
-
+const express = require("express"); //import express
 const path = require("path");
-
-//require db.json file 
-const noteData = require("./Develop/db/db.json");
-
-//set port for deployment
-const PORT = 3001;
-
-//initialize app var by setting it to = express()
-const app = express();
+const uuid = require("/Develop/helpers/uuid.js"); //utility for generating ids for notes
+const noteData = require("/Develop/db/db.json"); //require db.json file 
+const PORT = 3001; //set port for deployment
+const app = express(); //initialize app var by setting it to = express()
 
 //prep express to parse data
 app.use(express.urlencoded({
