@@ -1,6 +1,7 @@
 const notes = require("express").Router();
-const {readFromFile, readAndAppend } = require("");
-const uuid = require("../utilities/uuid"); 
+const {readFromFile, readAndAppend } = require("/utilities/fsUtils");
+const uuid = require("/utilities/uuid"); 
+// app.use("/api", api);
 
 //GET request to retrieve notes
 app.get("/api/notes", (req, res) => {

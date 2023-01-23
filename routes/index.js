@@ -1,7 +1,7 @@
 const express = require("express");
 
 //import route for /notes
-const notesRouter = require("./notes");
+const notesRouter = require("/notes");
 
 const app = express();
 
