@@ -1,19 +1,21 @@
+// const express = require("express");
 const notes = require("express").Router();
 const {readFromFile, readAndAppend } = require("/utilities/fsUtils");
 const uuid = require("/utilities/uuid"); 
 // app.use("/api", api);
+// app.use("", notesRouter);
+// module.exports = app;
 
 //GET request to retrieve notes
-app.get("/api/notes", (req, res) => {
+app.get("/", (req, res) => {
     res.json(`${req.method} request to get notes received (GET success)`);
-    readFromFile("../db/db.json")
+
+    readFromFile("./db/db.json")
         .then((data) => res.json(JSON.parse(data)));
-    // res.render("notes.html");
-    // res.json(noteData);
     });
 
 //POST request to add note
-app.post("/api/notes", (req, res) => {
+app.post("/", (req, res) => {
     console.info(`${req.method} request to add note received (POST success)`);
 
     const { title, text } = req.body;
@@ -59,3 +61,5 @@ app.post("/api/notes", (req, res) => {
       //   res.status(500).json("Error: could not post note.");
       // }
     });
+
+    module.exports = notes;
