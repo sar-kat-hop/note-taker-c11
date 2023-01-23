@@ -4,14 +4,14 @@ let saveNoteBtn;
 let newNoteBtn;
 let noteList;
 
-//dynamically generated html
+//dynamically generated html (for notes pg)
 if (window.location.pathname === '/notes') {
   noteTitle = document.querySelector('.note-title');
   noteText = document.querySelector('.note-textarea');
   saveNoteBtn = document.querySelector('.save-note');
   newNoteBtn = document.querySelector('.new-note');
   noteList = document.querySelectorAll('.list-container .list-group');
-}
+};
 
 // Show an element
 const show = (elem) => {
@@ -38,16 +38,7 @@ const saveNote = (note) =>
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(note),
-  })
-    //may not need following code:
-    .then((res) => res.json())
-    .then((data) => {
-      console.log("POST request successful: ", data);
-      return data;
-    })
-    .catch((error) => {
-      console.error("POST request error: ", error);
-    });
+  });
 
 const deleteNote = (id) =>
   fetch(`/api/notes/${id}`, {
