@@ -1,36 +1,49 @@
 const express = require("express"); //import express
 const path = require("path");
 const uuid = require("../utilities/uuid"); //utility for generating ids for notes
-// const noteData = require("../db/db.json"); //require db.json file 
+// const api = require("./index");
 const fs = require("fs");
-const { networkInterfaces } = require("os");
+const util = require("util");
+const readFromFile = util.promisify(fs.readFile);
 
-const PORT = 3001; //set port for deployment
+let PORT = 3001; //set port for deployment (will be handled by Heroku, so don't specifiy PORT #?)
 
 const app = express(); //initialize app var by setting it to = express()
 
-app.use(express.json());
-//prep express to parse data
-
+app.use(express.json()); //prep express to parse data
 app.use(express.urlencoded({extended: true }));
+// app.use("/api", api);
 
 app.use(express.static("public"));
 
 //serve landing page
 // app.get((req, res) => res.send(""));
 app.get("/", (req, res) =>
-  res.sendFile(path.join(__dirname, "./index.html"))
+  res.sendFile(path.join(__dirname, "/index.html"))
   );
 
 //serve notes page
   app.get("/notes", (req, res) => 
-    res.sendFile(path.join(__dirname, "/public/notes.html"))
+    res.sendFile(path.join(__dirname, "/notes.html"))
     );
+
+//example code
+  // const readAndAppend = (content, file) => {
+  //   fs.readFile(file, 'utf8', (err, data) => {
+  //     if (err) {
+  //       console.error(err);
+  //     } else {
+  //       const parsedData = JSON.parse(data);
+  //       parsedData.push(content);
+  //       writeToFile(file, parsedData);
+  //         }
+  //       });
+  //     };
 
 //GET request to retrieve notes
 app.get("/api/notes", (req, res) => {
   res.json(`${req.method} request to get notes received (GET success)`);
-  readFromFile("./db/db.json")
+  readFromFile("../db/db.json")
     .then((data) => res.json(JSON.parse(data)));
   // res.render("notes.html");
   // res.json(noteData);
@@ -49,7 +62,7 @@ app.post("/api/notes", (req, res) => {
         note_id: uuid(),
       };
 
-      readAndAppend(newNote, "./db/db.json");
+      readAndAppend(newNote, "../db/db.json");
 
       const response = {
         status: "Success",
@@ -86,7 +99,7 @@ app.post("/api/notes", (req, res) => {
   });
 
 //add port listening console msg
-app.listen(process.env.PORT, () =>
+app.listen(PORT, () =>
   console.log(`Note Taker listening at http://localhost:${PORT}`)
   );
 // app.listen(process.env.PORT);
