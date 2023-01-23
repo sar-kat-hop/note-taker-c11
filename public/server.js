@@ -1,8 +1,9 @@
 const express = require("express"); //import express
 const path = require("path");
 const uuid = require("../utilities/uuid"); //utility for generating ids for notes
-const noteData = require("../db/db.json"); //require db.json file 
+// const noteData = require("../db/db.json"); //require db.json file 
 const fs = require("fs");
+const { networkInterfaces } = require("os");
 
 const PORT = 3001; //set port for deployment
 
@@ -15,67 +16,77 @@ app.use(express.urlencoded({extended: true }));
 
 app.use(express.static("public"));
 
-//TODO: see if code below is approp for routing pages...?
-  //serve landing page ("home"; since this pg is static, approp to create indiv route? 
-    // app.get("/home", (req, res) => 
-    //   res.sendFile(path.join(__dirname, "./public/index.html"))
-    //   );
+//serve landing page
+// app.get((req, res) => res.send(""));
+app.get("/", (req, res) =>
+  res.sendFile(path.join(__dirname, "./index.html"))
+  );
 
-  //alternative to above:
-    app.get("/", (req, res) =>
-      res.sendFile(path.join(__dirname, "/public/index.html"))
-      );
+//serve notes page
+  app.get("/notes", (req, res) => 
+    res.sendFile(path.join(__dirname, "/public/notes.html"))
+    );
 
-  // app.get((req, res) => res.send(""));
-
-//return notes in JSON
-// app.get("/api", (req, res) => res.json(noteData));
-
-//GET request for notes
+//GET request to retrieve notes
 app.get("/api/notes", (req, res) => {
-  //notify client
   res.json(`${req.method} request to get notes received (GET success)`);
+  readFromFile("./db/db.json")
+    .then((data) => res.json(JSON.parse(data)));
+  // res.render("notes.html");
   // res.json(noteData);
 });
 
 //POST request to add note
 app.post("/api/notes", (req, res) => {
   //console log confirming request rec'd
-  console.info(`${rew.method} request to add note received (POST success)`);
+  console.info(`${req.method} request to add note received (POST success)`);
 
-  const { title, text, note_id } = req.body;
-    if (title && text && note_id) {
+  const { title, text } = req.body;
+    if (title && text) {
       const newNote = {
         title,
         text,
         note_id: uuid(),
       };
 
-  //Is this needed?
-    //convert to string to save
-    const noteString = JSON.stringify(newNote);
+      readAndAppend(newNote, "./db/db.json");
 
-    //write string to db.json and catch error if applicable
-    fs.writeFile(`./db/db.json`, noteString, (err) => 
-      err
-        ? console.error(err)
-        : console.info(`New note with ID ${note_id} has been written to db.json.`)
-        );
+      const response = {
+        status: "Success",
+        body: newNote,
+      };
 
-    const response = {
-      status: "success",
-      body: newNote,
-      };  
-  
-    console.log(response);
-    res.status(201).json(response);
+        console.log(response);
+        // res.status(201).json(response);
+        res.json("New note added.");
 
     } else {
-      res.status(500).json("Error: could not post note.");
-    }
+        res.error("Error: could not add tip.");
+        // res.status(500).json("Error");
+    };
+
+    //write string to db.json and catch error if applicable
+    // fs.writeFile(`./db/db.json`, noteString, (err) => 
+    //   err
+    //     ? console.error(err)
+    //     : console.info(`New note with ID ${note_id} has been written to db.json.`)
+    //     );
+
+    // const response = {
+    //   status: "success",
+    //   body: newNote,
+    //   };  
+  
+    // console.log(response);
+    // res.status(201).json(response);
+
+    // } else {
+    //   res.status(500).json("Error: could not post note.");
+    // }
   });
 
 //add port listening console msg
-app.listen(PORT, () =>
+app.listen(process.env.PORT, () =>
   console.log(`Note Taker listening at http://localhost:${PORT}`)
-);
+  );
+// app.listen(process.env.PORT);
