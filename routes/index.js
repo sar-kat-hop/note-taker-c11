@@ -1,7 +1,7 @@
 const express = require("express");
 
-//import route for /notes
-const notesRouter = require("/notes");
+// //import route for /notes
+const notesRouter = require("./notes");
 
 const app = express();
 
@@ -34,6 +34,7 @@ const hide = (elem) => {
   elem.style.display = 'none';
 };
 
+//retrieve existing notes
 const getNotes = () =>
   fetch('/api/notes', {
     method: 'GET',
