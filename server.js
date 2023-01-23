@@ -16,17 +16,16 @@ app.use(express.static("public"));
 //serve landing page
   // app.get((req, res) => res.send(""));
 app.get("/", (req, res) =>
-  res.sendFile(path.join(__dirname, "../public/index.html"))
+  res.sendFile(path.join(__dirname, "/index.html"))
   );
 
 //serve notes page
   app.get("/notes", (req, res) => 
-    res.sendFile(path.join(__dirname, "../public/notes.html"))
+    res.sendFile(path.join(__dirname, "/notes.html"))
     );
 
 //add port listening console msg
 app.listen(PORT, () =>
   console.log(`Note Taker listening at http://localhost:${PORT}`)
   );
-  
 // app.listen(process.env.PORT);

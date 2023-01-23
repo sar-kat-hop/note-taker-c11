@@ -1,3 +1,14 @@
+const express = require("express");
+
+//import route for /notes
+const notesRouter = require("./notes");
+
+const app = express();
+
+app.use("/notes", notesRouter);
+
+module.exports = app;
+
 let noteTitle;
 let noteText;
 let saveNoteBtn;
@@ -81,18 +92,6 @@ const handleNoteSave = () => {
 
       alert(`Note saved. ID: ${data.note_id}`); //add alert to indicate note saved (replace with modal at some point)
     });
-
-  //move following code to server.js
-    // const response = {
-    //   status: "Success: Note saved.",
-    //   body: newNote,
-    // };
-    //     console.log(response); //add console logging for testing
-    //     res.status(201).json(response);
-
-  // } else {
-  //   res.status(500).json("Error: note could not be saved.");
-  //   console.error();
   };
 
 // Delete the clicked note
