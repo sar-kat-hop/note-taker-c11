@@ -12,8 +12,6 @@ app.get("/", (req, res) => {
 
     readFromFile("./db/db.json")
         .then((data) => res.json(JSON.parse(data)));
-    // res.render("notes.html");
-    // res.json(noteData);
     });
 
 //POST request to add note

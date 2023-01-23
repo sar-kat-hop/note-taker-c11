@@ -17,14 +17,21 @@ app.use(express.urlencoded({extended: true }));
 
 app.use(express.static("public"));
 
+//time logger
+app.use((req, res, next) => {
+  console.log("new request received at " + Date.now());
+
+  next();
+});
+
 //serve landing page
   // app.get((req, res) => res.send(""));
-app.get("/", (req, res) =>
+app.get("*", (req, res) =>
   res.sendFile(path.join(__dirname, "/public/index.html"))
   );
 
 //serve notes page
-  app.get("/", (req, res) => 
+  app.get("/notes", (req, res) => 
     res.sendFile(path.join(__dirname, "/public/notes.html"))
     );
 
