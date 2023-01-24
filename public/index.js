@@ -1,13 +1,12 @@
 const express = require("express");
-
-// //import route for /notes
-const notesRouter = require("./notes");
-
+const { get } = require("./server");
 const app = express();
 
-app.use("/notes", notesRouter);
+// //import route for /notes
+  // const notesRouter = require("./routes/notes");
 
-module.exports = app;
+// app.use("/notes", notesRouter);
+// module.exports = app;
 
 let noteTitle;
 let noteText;
@@ -34,17 +33,32 @@ const hide = (elem) => {
   elem.style.display = 'none';
 };
 
-//retrieve existing notes
-const getNotes = () =>
-  fetch('/api/notes', {
-    method: 'GET',
+// const getNotes = async () => {
+//   const result = await fetch("/api/notes", {
+//     method: "GET",
+//   });
+//   const json = await result.json();
+//   return json;
+// };
+
+
+//retrieve existing notes; added async to starter code
+const getNotes = async () => {
+  const result = await fetch("/api/notes", {
+    method: "GET",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
-  });
+  })
+    .then((res) => res.json())
+    .then((data) => data);
+
+    const json = await result.json();
+    return json;
+};
 
 const saveNote = (note) =>
-  fetch('/api/notes', {
+  fetch('/api/notes/', { //experiment with adding :note to the end
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -135,10 +149,10 @@ const handleRenderSaveBtn = () => {
   }
 };
 
-//add save button event listener?
-saveNoteBtn.addEventListener("click", (e) => {
-  e.preventDefault();
-});
+//this code's fxnality is covered by starter code so it's redundant...
+  // const saveBtnHandler = () =>
+  //   getNotes().then((response) => response.forEach((item) =>
+  //     renderNote(item)));
 
 // Render the list of note titles
 const renderNoteList = async (notes) => {
