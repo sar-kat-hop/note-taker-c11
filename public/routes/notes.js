@@ -1,13 +1,16 @@
-// const express = require("express");
+const express = require("express");
 const notes = require("express").Router();
-const {readFromFile, readAndAppend } = require("/utilities/fsUtils");
-const uuid = require("/utilities/uuid"); 
+const {readFromFile, readAndAppend } = require("../utilities/fsUtils");
+const uuid = require("../utilities/uuid"); 
+
+const app = express();
+
 // app.use("/api", api);
-// app.use("", notesRouter);
+// app.use("/notes", notesRouter);
 // module.exports = app;
 
 //GET request to retrieve notes
-app.get("/", (req, res) => {
+app.get("/api/notes", (req, res) => {
     res.json(`${req.method} request to get notes received (GET success)`);
 
     readFromFile("./db/db.json")
@@ -15,7 +18,7 @@ app.get("/", (req, res) => {
     });
 
 //POST request to add note
-app.post("/", (req, res) => {
+app.post("/api/notes", (req, res) => {
     console.info(`${req.method} request to add note received (POST success)`);
 
     const { title, text } = req.body;
@@ -26,7 +29,7 @@ app.post("/", (req, res) => {
                 note_id: uuid(),
             };
 
-            readAndAppend(newNote, "../db/db.json");
+            readAndAppend(newNote, "../db.json");
 
             const response = {
                 status: "Success",
