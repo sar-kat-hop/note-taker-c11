@@ -5,12 +5,17 @@ const uuid = require("../utilities/uuid");
 
 const app = express();
 
+app.use(express.json()); 
+app.use(express.urlencoded({extended: true }));
+
+app.use(express.static("public"));
+
 // app.use("/api", api);
 // app.use("/notes", notesRouter);
 // module.exports = app;
 
 //GET request to retrieve notes
-app.get("/api/notes", (req, res) => {
+app.get("/", (req, res) => {
     res.json(`${req.method} request to get notes received (GET success)`);
 
     readFromFile("./db/db.json")
@@ -18,7 +23,7 @@ app.get("/api/notes", (req, res) => {
     });
 
 //POST request to add note
-app.post("/api/notes", (req, res) => {
+app.post("/notes", (req, res) => {
     console.info(`${req.method} request to add note received (POST success)`);
 
     const { title, text } = req.body;
@@ -41,7 +46,8 @@ app.post("/api/notes", (req, res) => {
             res.json("New note added.");
 
         } else {
-            res.error("Error: could not add tip.");
+            res.error("Error: could not add note.");
+            console.error("Couldn't POST note.");
             // res.status(500).json("Error");
         };
 

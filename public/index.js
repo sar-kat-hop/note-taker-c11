@@ -41,24 +41,24 @@ const hide = (elem) => {
 //   return json;
 // };
 
-
 //retrieve existing notes; added async to starter code
 const getNotes = async () => {
-  const result = await fetch("/api/notes", {
+  const result = await fetch("/home", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
     },
   })
-    .then((res) => res.json())
-    .then((data) => data);
+  
+  const json = await result.json();
+  return json;
 
-    const json = await result.json();
-    return json;
+  // .then((res) => res.json())
+  // .then((data) => data);
 };
 
 const saveNote = (note) =>
-  fetch('/api/notes/', { //experiment with adding :note to the end
+  fetch('/notes', { //experiment with adding :note to the end
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -67,7 +67,7 @@ const saveNote = (note) =>
   });
 
 const deleteNote = (id) =>
-  fetch(`/api/notes/${id}`, {
+  fetch(`/notes/${id}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',

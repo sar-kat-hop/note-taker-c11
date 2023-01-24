@@ -4,12 +4,13 @@ const noteData = require("./db.json");
 
 const PORT = process.env.PORT || 3001; //port config for use with heroku and locally for testing
 
-//import route for /notes
-const notesRouter = require("./routes/notes");
-
 const app = express();
 
-app.use("/api/notes", notesRouter);
+//import route for /notes
+const notesRouter = require("./routes/notes");
+app.use("/notes", notesRouter);
+
+// app.use("/routes");
 // app.use("/api", api);
 
 //middleware for parsing json and url-encoded data
@@ -20,26 +21,26 @@ app.use(express.static("public"));
 
 //time logger
   app.use((req, res, next) => {
-    console.log("new request received at " + Date.today());
+    console.log("new request received at " + Date());
       next();
   });
 
 //GET all notes
-  app.get("/api/notes", (req, res) => res.json(noteData));
+  app.get("/", (req, res) => res.json(noteData));
 
 //serve landing page
   // app.get((req, res) => res.send(""));
-  app.get("/api", (req, res) => {
+  app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "index.html")),
       console.info(`GET /index.html`);
       res.status(200).json(index);
   });
 
 //serve notes page
-  app.get("/api/notes", (req, res) => {
+  app.get("/notes", (req, res) => {
     res.sendFile(path.join(__dirname, "notes.html")),
-      console.info(`GET /api/notes`);
-      res.status(200).json(notes);
+      console.info(`GET /notes.html`);
+      res.status(200).json();
   });
 
 //add port listening console msg
